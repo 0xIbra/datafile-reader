@@ -1,0 +1,22 @@
+{
+  "name": "datafile-reader",
+  "version": "0.0.1",
+  "description": "Node package that can read memory friendly large CSV, JSON and XML files.",
+  "homepage": "https://github.com/polkovnik-z/datafile-reader",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "node.js",
+    "file-reader",
+    "csv-reader",
+    "json-reader",
+    "xml-reader"
+  ],
+  "author": "Ibragim Abubakarov",
+  "license": "MIT",
+  "dependencies": {
+    "csv-parser": "^3.0.0"
+  }
+}
