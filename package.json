@@ -17,6 +17,8 @@
   "author": "Ibragim Abubakarov",
   "license": "MIT",
   "dependencies": {
-    "csv-parser": "^3.0.0"
+    "JSONStream": "^1.3.5",
+    "csv-parser": "^3.0.0",
+    "fast-xml-parser": "^3.19.0"
   }
 }
