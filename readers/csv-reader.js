@@ -1,5 +1,6 @@
 const csv = require('csv-parser');
 const fs = require('fs');
+const { Readable } = require('stream');
 
 class CSVReader {
 
@@ -17,7 +18,7 @@ class CSVReader {
         let results = [];
 
         await new Promise(resolve => {
-            fs.createReadStream(this._filename)
+            fs.createReadStream(this._filename, {encoding: 'utf8'})
                 .pipe(csv(this._options))
                 .on('data', (row) => {
                     results.push(row);
@@ -45,7 +46,7 @@ class CSVReader {
         let headerSkipped = false;
         let results = [];
 
-        fs.createReadStream(this._filename)
+        fs.createReadStream(this._filename, {encoding: 'utf8'})
             .pipe(csv(this._options))
             .on('data', (row) => {
                 if (headerSkipped === false && this._options['skipHeader'] === true) {
@@ -65,6 +66,20 @@ class CSVReader {
                     callback(results);
                 }
             });
+    }
+
+    iterate() {
+        let readable = new Readable({objectMode: true});
+        readable._read = () => {};
+
+        fs.createReadStream(this._filename, {encoding: 'utf8'})
+            .pipe(csv(this._options))
+            .on('data', data => {
+                readable.push(data);
+            })
+            .on('end', () => readable.destroy());
+
+        return readable;
     }
 }
 

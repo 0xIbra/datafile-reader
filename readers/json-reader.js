@@ -1,5 +1,6 @@
 const JSONStream = require('JSONStream');
 const fs = require('fs');
+const { Readable } = require('stream');
 
 class JSONReader {
 
@@ -52,9 +53,7 @@ class JSONReader {
 
         let results = [];
         let item = this._getParseItem();
-        let stream = fs.createReadStream(this._filename, {encoding: 'utf8'});
         let parser = JSONStream.parse(item);
-        stream.pipe(parser);
 
         parser.on('data', (object) => {
             results.push(object);
@@ -70,6 +69,24 @@ class JSONReader {
                 results = [];
             }
         });
+
+        fs.createReadStream(this._filename, {encoding: 'utf8'})
+            .pipe(parser);
+    }
+
+    iterate() {
+        let readable = new Readable({ objectMode: true });
+        readable._read = () => {};
+
+        let item = this._getParseItem();
+        let parser = JSONStream.parse(item);
+        parser.on('data', data => readable.push(data));
+        parser.on('end', () => readable.destroy());
+
+        fs.createReadStream(this._filename, {encoding: 'utf8'})
+            .pipe(parser);
+
+        return readable;
     }
 }
 
